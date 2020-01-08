@@ -17,7 +17,7 @@ export default function UserDetailPage(props) {
     }
 
     getUser()
-  }, [])
+  }, [props.match.params.id])
 
   return user.loading ? (
     <div>Loading...</div>
@@ -34,7 +34,7 @@ export default function UserDetailPage(props) {
             <th>Followers</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody> 
           <tr>
             <td>{user.name}</td>
             <td>{user.location}</td>
