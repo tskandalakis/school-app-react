@@ -1,26 +1,31 @@
 import {withRouter} from 'react-router-dom';
 import axios from 'axios';
+import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import config from './config/config';
 
 const instance = axios.create({
     baseURL: config.nodeApi
 });
 
-instance.defaults.headers.common['Authorization'] = localStorage.getItem('token');
+const updateAuthHeader = () => {
+  instance.defaults.headers.common['Authorization'] = localStorage.getItem('access_token') || "";
+}
 
-// Redirect user to login page on unauthorized response
-axios.interceptors.response.use((response) => {
-
-  if(response.status===401) {
-    localStorage.removeItem('token');
-    this.props.history.push('/login');
+const refreshAuthLogic = async failedRequest => {
+  const tokenRefreshCall = await axios.post(config.nodeApi+'/auth/refresh', { refresh_token: localStorage.getItem('refresh_token')});
+  if(tokenRefreshCall.status===201) {
+    localStorage.setItem('access_token', tokenRefreshCall.data.access_token);
+    this.updateAuthHeader();
+    return Promise.resolve();
   } else {
-    return response;
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    this.updateAuthHeader();
+    return this.props.history.push('/login');
   }
+};
 
-}, error => {
-  // handle the response error
-  return Promise.reject(error);
-});
+updateAuthHeader();
+createAuthRefreshInterceptor(instance, refreshAuthLogic);
 
 export default withRouter(instance);

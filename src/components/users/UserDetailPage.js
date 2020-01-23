@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import React, { useState, useEffect } from 'react';
+import { Container, Row, Col, Table } from 'react-bootstrap';
+import nodeApi from '../../NodeApi';
 
 export default function UserDetailPage(props) {
   const initialUserState = {
@@ -11,7 +12,7 @@ export default function UserDetailPage(props) {
 
   useEffect(() => {
     const getUser = async () => {
-      const { data } = await axios(`https://api.github.com/users/${props.match.params.id}`)
+      const { data } = await nodeApi.get(`/user/${props.match.params.id}`);
 
       setUser(data)
     }
@@ -22,29 +23,29 @@ export default function UserDetailPage(props) {
   return user.loading ? (
     <div>Loading...</div>
   ) : (
-    <div className="container">
-      <h1>{props.match.params.id}</h1>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Location</th>
-            <th>Website</th>
-            <th>Followers</th>
-          </tr>
-        </thead>
-        <tbody> 
-          <tr>
-            <td>{user.name}</td>
-            <td>{user.location}</td>
-            <td>
-              <a href={user.blog}>{user.blog}</a>
-            </td>
-            <td>{user.followers}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <Container>
+      <Row>
+        <Col></Col>
+        <Col>
+          <Table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Admin</th>
+              </tr>
+            </thead>
+            <tbody> 
+              <tr>
+                <td>{user.name}</td>
+                <td>{user.email}</td>
+                <td>{user.admin}</td>
+              </tr>
+            </tbody>
+          </Table>
+        </Col>
+        <Col></Col>
+      </Row>
+  </Container>
   )
 }

@@ -1,24 +1,73 @@
 import React from 'react'
+import { withRouter, Link, NavLink } from 'react-router-dom';
 import { Nav, Navbar, NavDropdown } from 'react-bootstrap';
 
-export default function NavbarMenu() {
-  return (
-    <Navbar bg="light" expand="lg">
-    <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
-    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-    <Navbar.Collapse id="basic-navbar-nav">
-      <Nav className="mr-auto">
-        <Nav.Link href="#home">Home</Nav.Link>
-        <Nav.Link href="#link">Link</Nav.Link>
-        <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-          <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-          <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-          <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-          <NavDropdown.Divider />
-          <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-        </NavDropdown>
-      </Nav>
-    </Navbar.Collapse>
-  </Navbar>
-  )
+class NavbarMenu extends React.Component {
+  render() {
+    if(this.props.appProps.activeUser.loaded) {
+      if(this.props.appProps.activeUser.user.role === "super") {
+        return (
+          <Navbar bg="light" expand="lg">
+          <Navbar.Brand as={Link} to='/'>React-Bootstrap</Navbar.Brand>
+          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Collapse id="responsive-navbar-nav">
+            <Nav className="mr-auto">
+              <Nav.Link as={NavLink} to='/classes'>Classes</Nav.Link>
+              <Nav.Link as={NavLink} to='/directory'>Directory</Nav.Link>
+              <Nav.Link as={NavLink} to='/school'>Schools</Nav.Link>
+            </Nav>
+            <Nav>
+            <NavDropdown title={ this.props.appProps.activeUser.user.name } id="ncollasible-nav-dropdow">
+                <NavDropdown.Item as={NavLink} to='/account'>Account</NavDropdown.Item>
+                <NavDropdown.Item as={NavLink} to='/logout'>Logout</NavDropdown.Item>
+              </NavDropdown>
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
+        )
+      } else if(this.props.appProps.activeUser.user.role === "admin") {
+        return (
+          <Navbar bg="light" expand="lg">
+          <Navbar.Brand as={Link} to='/'>React-Bootstrap</Navbar.Brand>
+          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Collapse id="responsive-navbar-nav">
+            <Nav className="mr-auto">
+              <Nav.Link as={NavLink} to='/classes'>Classes</Nav.Link>
+              <Nav.Link as={NavLink} to='/directory'>Directory</Nav.Link>
+            </Nav>
+            <Nav>
+            <NavDropdown title={this.props.appProps.activeUser.user.name} id="ncollasible-nav-dropdow">
+                <NavDropdown.Item as={NavLink} to='/account'>Account</NavDropdown.Item>
+                <NavDropdown.Item as={NavLink} to='/logout'>Logout</NavDropdown.Item>
+              </NavDropdown>
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
+        )
+      } else {
+        return (
+          <Navbar bg="light" expand="lg">
+          <Navbar.Brand as={Link} to='/'>React-Bootstrap</Navbar.Brand>
+          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Collapse id="responsive-navbar-nav">
+            <Nav className="mr-auto">
+              <Nav.Link as={NavLink} to='/classes'>Classes</Nav.Link>
+              <Nav.Link as={NavLink} to='/directory'>Directory</Nav.Link>
+            </Nav>
+            <Nav>
+            <NavDropdown title={this.props.appProps.activeUser.user.name} id="ncollasible-nav-dropdow">
+                <NavDropdown.Item as={NavLink} to='/account'>Account</NavDropdown.Item>
+                <NavDropdown.Item as={NavLink} to='/logout'>Logout</NavDropdown.Item>
+              </NavDropdown>
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
+        )
+      }
+    } else {
+      return null;
+    }
+  }
 }
+
+export default withRouter(NavbarMenu);
